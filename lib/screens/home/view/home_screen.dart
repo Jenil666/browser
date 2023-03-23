@@ -14,7 +14,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomeProvider? T,F;
+  PullToRefreshController? pull;
   @override
+  void initState() {
+    super.initState();
+
+    pull = PullToRefreshController(
+      onRefresh: () {
+        T!.webViewController!.reload();
+      },
+    );
+  }
   Widget build(BuildContext context) {
     T =Provider.of<HomeProvider>(context,listen: true);
     F =Provider.of<HomeProvider>(context,listen: false);
@@ -65,20 +75,31 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             InAppWebView(
               initialUrlRequest: URLRequest(url: Uri.parse("https://www.google.com/"),),
+              pullToRefreshController: pull!,
               onWebViewCreated: (controller) {
                 T!.webViewController = controller;
+                //pull!.endRefreshing();
+
 
               },
               onLoadError: (controller, url, code, message) {
+                pullToRefreshController: pull!;
                 T!.webViewController = controller;
+                pull!.endRefreshing();
+
               },
               onLoadStart: (controller, url) {
                 T!.webViewController = controller;
               },
               onLoadStop: (controller, url) {
+                //pullToRefreshController: pull!;
                 T!.webViewController = controller;
+                pull!.endRefreshing(
+
+                );
               },
               onProgressChanged: (controller, progress) {
+                pull!.endRefreshing();
                 T!.webViewController = controller;
                 F!.changeIndecato(progress/100);
               },
