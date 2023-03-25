@@ -15,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   HomeProvider? T,F;
   PullToRefreshController? pull;
+
   @override
   void initState() {
     super.initState();
@@ -78,8 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
               pullToRefreshController: pull!,
               onWebViewCreated: (controller) {
                 T!.webViewController = controller;
-                //pull!.endRefreshing();
-
+                F!.webViewController!.stopLoading();
 
               },
               onLoadError: (controller, url, code, message) {
@@ -135,6 +135,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       F!.webViewController!.goForward();
 
                     }, icon: Icon(Icons.arrow_forward_rounded),),
+                    IconButton(onPressed: () {
+                      F!.webViewController!.stopLoading();
+                    }, icon: Icon(Icons.cancel_outlined))
                   ],
                 ),
               ),
